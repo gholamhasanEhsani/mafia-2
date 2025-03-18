@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fa">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>تب سوم - انتخاب نقش‌ها</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <main id="tab3-content">
+            <div class="head-btn">
+                <button id="back-to-tab2" class="back-button">
+                    <img src="https://gholamhasan.sirv.com/right.png" alt="بازگشت">
+                </button>
+                <button id="info-button" class="info-button">
+                    <img src="https://gholamhasan.sirv.com/info.png" alt="توضیحات نقش‌ها">
+                </button>
+            </div>
+            <h2>انتخاب نقش‌ها</h2>
+            <p>لطفاً نقش‌ها را انتخاب کنید:</p>
+            <hr>
+            <p id="selected-roles-count">تعداد نقش‌های انتخاب شده: 0</p>
+            <h3>شهروندان</h3>
+            <div id="citizen-roles-container" class="roles-container"></div>
+            <h3>مافیاها</h3>
+            <div id="mafia-roles-container" class="roles-container"></div>
+            <h3>مستقل‌ها</h3>
+            <div id="neutral-roles-container" class="roles-container"></div>
+            <button id="confirm-roles" disabled>تایید نقش‌ها</button>
+        </main>
+        <div id="role-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <div id="role-list"></div>
+            </div>
+        </div>
+        <script src="app.js"></script>
+    </body>
+</html>
