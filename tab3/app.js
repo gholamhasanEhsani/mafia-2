@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     const loadMaxRolesCount = () => {
-        const players = JSON.parse(localStorage.getItem('players')) || [];
+        const players = JSON.parse(localStorage.getItem('playerNames')) || [];
         maxRolesCount = players.length;
         updateSelectedRolesCount();
     };

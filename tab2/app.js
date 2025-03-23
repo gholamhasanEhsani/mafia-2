@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const MIN_PLAYERS = 5;
 
     const loadPlayers = () => {
-        const players = JSON.parse(localStorage.getItem('players')) || [];
+        const players = JSON.parse(localStorage.getItem('playerNames')) || [];
         players.forEach((player, index) => addPlayerInput(index + 1, player));
         checkAndAddInput();
         toggleNextStepButton();
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const players = Array.from(playerInputs)
             .map(input => input.value.trim())
             .filter(value => value !== '');
-        localStorage.setItem('players', JSON.stringify(players));
+        localStorage.setItem('playerNames', JSON.stringify(players));
     };
 
     const addPlayerInput = (playerCount, value = '') => {
