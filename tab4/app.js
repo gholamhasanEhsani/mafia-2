@@ -1,25 +1,101 @@
 document.addEventListener('DOMContentLoaded', () => {
     const backButton = document.getElementById('back-to-tab3');
+    const manualAdjustmentButton = document.getElementById('manual-adjustment-button');
+    const goDashboardButton = document.getElementById('go-dashboard-button');
     const assignedRolesResult = document.getElementById('assigned-roles-result');
     const modal = document.getElementById('role-modal');
     const modalContent = modal.querySelector('.modal-content');
 
     let shuffledRoles = [];
     let rolesData = [];
+    let selectedRoles = [];
+    let playerNames = [];
 
-    backButton.addEventListener('click', () => {
-        window.location.href = '../tab3/';
-    });
+    const currentHash = window.location.hash;
 
-    const selectedRoles = JSON.parse(localStorage.getItem('selectedRoles')) || [];
-    const playerNames = JSON.parse(localStorage.getItem('playerNames')) || [];
-
-    if (selectedRoles.length === 0 || playerNames.length === 0) {
-        assignedRolesResult.innerHTML = '<p style="color: red;">هیچ نقشی انتخاب نشده یا بازیکنی تعریف نشده است!</p>';
-        return;
+    if (currentHash == '#manual') {
+        executeManualMode();
+    } else {
+        window.location.hash = '#random';
+        executeRandomMode();
     }
 
-    const fetchRolesData = async () => {
+    backButton.addEventListener('click', () => window.location.href = '../tab3/');
+
+    goDashboardButton.addEventListener('click', () => {
+        let finalRolesToSave = [];
+
+        if (window.location.hash === '#manual') {
+            const assignedRolesManual = JSON.parse(localStorage.getItem('AssignedRoles')) || [];
+
+            finalRolesToSave = assignedRolesManual.map(item => ({
+                name: item.playerName,
+                role: item.roleName,
+                isAlive: true
+            }));
+
+        } else if (window.location.hash === '#random') {
+            if (playerNames.length === 0 || shuffledRoles.length === 0) {
+                alert("خطا: نقش‌ها یا بازیکنان برای ذخیره سازی نهایی در دسترس نیستند.");
+                return;
+            }
+
+            finalRolesToSave = playerNames.map((name, index) => ({
+                name: name,
+                role: shuffledRoles[index],
+                isAlive: true
+            }));
+        }
+
+        if (finalRolesToSave.length > 0) {
+            localStorage.setItem('dashboardRoles', JSON.stringify(finalRolesToSave));
+            console.log("نقش‌های نهایی برای داشبورد ذخیره شدند:", finalRolesToSave);
+
+            window.location.href = '../dashboard/index.html';
+        } else {
+            alert("هیچ نقشی برای ذخیره‌سازی یافت نشد.");
+        }
+    });
+
+    function executeRandomMode() {
+        console.log("random mode");
+        selectedRoles = JSON.parse(localStorage.getItem('selectedRoles')) || [];
+        playerNames = JSON.parse(localStorage.getItem('playerNames')) || [];
+
+        if (selectedRoles.length === 0 || playerNames.length === 0) {
+            assignedRolesResult.innerHTML = '<p style="color: red;">هیچ نقشی انتخاب نشده یا بازیکنی تعریف نشده است!</p>';
+            return;
+        }
+
+        fetchRolesData().then(() => {
+            shuffleRoles();
+            createPlayerButtons();
+        });
+    }
+
+    function executeManualMode() {
+        console.log("manual mode");
+        // AssignedRoles ساختارش: {playerName, roleName}
+        const assignedRoles = JSON.parse(localStorage.getItem('AssignedRoles')) || [];
+        if (assignedRoles.length === 0) {
+            assignedRolesResult.innerHTML = '<p style="color: red;">هیچ نقشی در حالت دستی تخصیص نیافته است!</p>';
+            return;
+        }
+
+        assignedRolesResult.innerHTML = '';
+        assignedRoles.forEach(role => {
+            const button = document.createElement('button');
+            button.classList.add('role-display-button');
+            button.textContent = role.playerName;
+            button.addEventListener('click', () => {
+                showRoleInModal(role.playerName, role.roleName);
+                button.classList.add('seen');
+            });
+            assignedRolesResult.appendChild(button);
+        });
+    }
+
+    async function fetchRolesData() {
         try {
             const response = await fetch('https://gholamhasan.sirv.com/desc-2.json');
             rolesData = await response.json();
@@ -29,7 +105,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const shuffleRoles = () => {
-        shuffledRoles = [...selectedRoles].sort(() => Math.random() - 0.5);
+        const arr = [...selectedRoles];
+        let m = arr.length;
+        while (m > 1) {
+            const i = (Math.random() * m--) | 0;
+            [arr[m], arr[i]] = [arr[i], arr[m]];
+        }
+        shuffledRoles = arr;
     };
 
     const createPlayerButtons = () => {
@@ -85,10 +167,5 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target === modal) {
             modal.style.display = 'none';
         }
-    });
-
-    fetchRolesData().then(() => {
-        shuffleRoles();
-        createPlayerButtons();
     });
 });

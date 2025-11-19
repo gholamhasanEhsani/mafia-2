@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fa">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>داشبورد مدیریت بازی مافیا</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <main id="dashboard-content">
+            <div class="head-btn">
+                <button id="back-to-tab4" class="back-button">
+                    <img src="https://gholamhasan.sirv.com/right.png" alt="بازگشت به توزیع نقش‌ها">
+                </button>
+            </div>
+            <h2>🎮 داشبورد مدیریت بازی</h2>
+            <p class="head-desc">ابزارهای لازم برای گردانندگی و ثبت وقایع بازی.</p>
+            <hr>
+            <div id="dashboard-grid">
+                <section class="grid-box last-move-cards">
+                    <h3>🃏 کارت‌های حرکت آخر</h3>
+                    <div id="last-move-cards-container" class="card-display-area">
+                        <div class="card-placeholder">کارت ۱</div>
+                        <div class="card-placeholder">کارت ۲</div>
+                        <div class="card-placeholder">کارت ۳</div>
+                        <div class="card-placeholder">کارت ۴</div>
+                        <div class="card-placeholder">کارت ۵</div>
+                    </div>
+                </section>
+                <section class="grid-box timer-box">
+                    <h3 style="text-align: right;">⏳ تایمر</h3>
+                    <div class="timer-modes">
+                        <button class="timer-mode-btn solid" data-time="60">صحبت عادی (60)</button>
+                        <button class="timer-mode-btn outline" data-time="45">چالش (45)</button>
+                        <button class="timer-mode-btn outline" data-time="25">معارفه (25)</button>
+                    </div>
+                    <div class="timer-controls-row">
+                        <div class="time-adjusters">
+                            <button id="time-increase-btn" class="adjust-btn">+</button>
+                            <button id="time-decrease-btn" class="adjust-btn">-</button>
+                        </div>
+                        <div class="timer-main-display">
+                            <div id="timer-display">01:00</div>
+                            <button id="timer-toggle-button" data-status="stopped">
+                                <img id="timer-icon" src="https://gholamhasan.sirv.com/play-button.png" alt="شروع">
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <section class="grid-box tip-box">
+                    <h3>💡 نکات گردانندگی</h3>
+                    <p id="tip-text">برای شروع، روی دکمه شروع تایمر کلیک کنید.</p>
+                </section>
+                <section class="grid-box players-status">
+                    <h3> 👥 وضعیت بازیکنان</h3>
+                    <button id="toggle-roles-visibility">
+                        <img id="toggle-roles-icon" src="https://gholamhasan.sirv.com/visible.png" alt="نمایش/پنهان‌سازی نقش‌ها">
+                    </button>
+                    <div id="players-list"></div>
+                </section>
+            </div>
+        </main>
+        <script src="app.js"></script>
+    </body>
+</html>

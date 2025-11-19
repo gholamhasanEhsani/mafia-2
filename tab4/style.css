@@ -14,7 +14,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     line-height: 1.5;
 }
 
@@ -163,4 +163,20 @@ hr {
 
 .close-button:hover {
     color: #c70000;
+}
+
+.go-dashboard-button {
+    background-color: transparent;
+    color: #0754ed;
+    border: solid 3px #0754ed;
+    padding: 15px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+.go-dashboard-button:hover:not(:disabled) {
+    background-color: #0754ed !important;
+    color: #fff;
 }
