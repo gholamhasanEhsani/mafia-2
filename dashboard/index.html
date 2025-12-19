@@ -4,7 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>داشبورد مدیریت بازی مافیا</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
         <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="https://gholamhasan.sirv.com/hat.png">
     </head>
     <body>
         <main id="dashboard-content">
@@ -18,13 +20,13 @@
             <hr>
             <div id="dashboard-grid">
                 <section class="grid-box last-move-cards">
-                    <h3>🃏 کارت‌های حرکت آخر</h3>
+                    <h3>⏮️ کارت‌های حرکت آخر</h3>
                     <div id="last-move-cards-container" class="card-display-area">
-                        <div class="card-placeholder">کارت ۱</div>
-                        <div class="card-placeholder">کارت ۲</div>
-                        <div class="card-placeholder">کارت ۳</div>
-                        <div class="card-placeholder">کارت ۴</div>
-                        <div class="card-placeholder">کارت ۵</div>
+                        <div class="card-placeholder" data-card-index="1">کارت ۱</div>
+                        <div class="card-placeholder" data-card-index="2">کارت ۲</div>
+                        <div class="card-placeholder" data-card-index="3">کارت ۳</div>
+                        <div class="card-placeholder" data-card-index="4">کارت ۴</div>
+                        <div class="card-placeholder" data-card-index="5">کارت ۵</div>
                     </div>
                 </section>
                 <section class="grid-box timer-box">
@@ -56,10 +58,97 @@
                     <button id="toggle-roles-visibility">
                         <img id="toggle-roles-icon" src="https://gholamhasan.sirv.com/visible.png" alt="نمایش/پنهان‌سازی نقش‌ها">
                     </button>
-                    <div id="players-list"></div>
+                    <div id="players-list" class="roles-hidden"></div>
+                </section>
+                <section class="grid-box sound-box">
+                    <h3>🎶 افکت‌های صوتی</h3>
+                    <audio id="sfx-player"></audio>
+                    <div id="sfx-buttons-container" class="sfx-grid"></div>
+                </section>
+                <section class="grid-box night-notes">
+                    <h3>📝 یادداشت‌ها</h3>
+                    <textarea id="night-notes-textarea" placeholder="یادداشت‌های شخصی (نام بازیکنان خارج شده، هشدارهای فردا و...)" rows="6"></textarea>
+                    <button id="save-night-notes-btn" style="background-color: #6c757d; margin-top: 10px;">ذخیره یادداشت</button>
+                </section>
+                <section class="grid-box night-report">
+                    <h3>🌙 ثبت وقایع شب</h3>
+                    <div class="night-grid">
+                        <div class="night-action-group">
+                            <div class="night-role-action" data-role="mafia">
+                                <label>🚨 گروه مافیا</label>
+                                <div class="mafia-controls">
+                                    <div class="mafia-action-buttons">
+                                        <button class="mafia-action-btn solid" data-action="shot">شلیک مستقیم</button>
+                                        <button class="mafia-action-btn outline" data-action="hssheshom">حس ششم</button>
+                                        <button class="mafia-action-btn outline" data-action="kharidari">خریداری</button>
+                                    </div>
+                                    <select class="night-target-select" id="mafia-target-select">
+                                        <option value="" selected disabled>انتخاب قربانی/هدف...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr class="night-divider">
+                        </div>
+                        <div class="night-action-group">
+                            <div class="night-role-action" data-role="matador">
+                                <label for="matador-control-select">☠️ ماتادور</label>
+                                <select class="night-target-select" id="matador-control-select">
+                                    <option value="" selected disabled>انتخاب فرد برای گرفتن قابلیت...</option>
+                                </select>
+                            </div>
+                            <hr class="night-divider">
+                        </div>
+                        <div class="night-action-group">
+                            <div class="night-role-action" data-role="doctor">
+                                <label for="doctor-target-select">💊 دکتر واتسون</label>
+                                <select class="night-target-select" id="doctor-target-select">
+                                    <option value="" selected disabled>انتخاب فرد برای نجات...</option>
+                                </select>
+                            </div>
+                            <hr class="night-divider">
+                        </div>
+                        <div class="night-action-group">
+                            <div class="night-role-action" data-role="leon">
+                                <label for="leon-target-select">🎯 لئون حرفه‌ای</label>
+                                <select class="night-target-select" id="leon-target-select">
+                                    <option value="" selected disabled>انتخاب فرد برای شلیک...</option>
+                                </select>
+                            </div>
+                            <hr class="night-divider">
+                        </div>
+                        <div class="night-action-group">
+                            <div class="night-role-action" data-role="kin">
+                                <label for="kin-target-select">🕵️ همشهری کین</label>
+                                <select class="night-target-select" id="kin-target-select">
+                                    <option value="" selected disabled>انتخاب فرد برای استعلام...</option>
+                                </select>
+                            </div>
+                            <hr class="night-divider">
+                        </div>
+                        <div class="night-action-group">
+                            <div class="night-role-action" data-role="konstantin">
+                                <label for="konstantin-target-select">👻 کنستانتین</label>
+                                <select class="night-target-select" id="konstantin-target-select">
+                                    <option value="" selected disabled>انتخاب فرد برای تولد مجدد...</option>
+                                </select>
+                            </div>
+                            <hr class="night-divider">
+                        </div>
+                    </div>
+                    <div class="report-button-group">
+                        <button id="save-night-report-btn" class="report-btn save-btn">ذخیره گزارش شب</button>
+                        <button id="view-past-reports-btn" class="report-btn view-btn">مشاهده گزارش شب‌ها</button>
+                    </div>
                 </section>
             </div>
         </main>
+        <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+        <script src="modules/utils.js"></script>
+        <script src="modules/players.js"></script>
+        <script src="modules/night-report.js"></script>
+        <script src="modules/timer.js"></script>
+        <script src="modules/last-move.js"></script>
+        <script src="modules/sfx-tips.js"></script>
         <script src="app.js"></script>
     </body>
 </html>

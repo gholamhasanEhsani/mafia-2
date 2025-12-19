@@ -20,7 +20,7 @@ body {
 
 main {
 	width: 90%;
-	max-width: 900px;
+	max-width: 1000px;
 	min-height: 100vh;
 	text-align: center;
 	padding: 20px;
@@ -178,11 +178,11 @@ hr {
 	max-width: 100%;
 	height: auto;
 	border-radius: 8px;
-	margin-bottom: 15px;
 }
 
 .timer-box {
 	text-align: center;
+	position: relative;
 }
 
 .timer-box h3 {
@@ -192,7 +192,7 @@ hr {
 .timer-controls-row {
 	display: flex;
 	align-items: end;
-	gap: 100px;
+	justify-content: center;
 }
 
 .timer-main-display {
@@ -240,6 +240,9 @@ hr {
 .time-adjusters {
 	display: flex;
 	flex-direction: column;
+	position: absolute;
+	right: 15px;
+	bottom: 15px;
 }
 
 .adjust-btn {
@@ -443,4 +446,279 @@ hr {
 	filter: brightness(.7);
 	background: inherit !important;
 	transform: none !important;
+}
+
+.night-notes textarea {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	resize: vertical;
+	font-family: sans-serif;
+	direction: rtl;
+}
+
+.night-report {
+	text-align: right;
+}
+
+.night-report label {
+	font-weight: bold;
+	display: block;
+	margin-bottom: 5px;
+	margin-top: 10px;
+	color: #333;
+}
+
+.night-role-action {
+	padding: 10px 0;
+}
+
+.night-divider {
+	border: none;
+	border-top: 1px dashed #e9ecef;
+	margin: 10px 0;
+}
+
+.night-target-select {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-top: 5px;
+	font-size: 1em;
+	direction: rtl;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	background: url('https://gholamhasan.sirv.com/arrow-down.png') no-repeat right 10px center;
+	background-size: 10px;
+	padding-right: 30px;
+}
+
+.mafia-controls {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.mafia-action-buttons {
+	display: flex;
+	gap: 5px;
+}
+
+.mafia-action-btn {
+	flex: 1;
+	font-size: 0.9em;
+	padding: 8px 5px;
+}
+
+.mafia-action-btn.outline {
+	background-color: transparent;
+	color: #222;
+	border: 1px solid #222;
+}
+
+.mafia-action-btn.outline:hover:not(.solid) {
+	background-color: lightgray;
+	transform: scale(1.02);
+}
+
+.mafia-action-btn.solid {
+	background-color: #222;
+	color: white;
+	border: 1px solid #222;
+}
+
+.mafia-action-btn.solid:hover {
+	background: black;
+}
+
+.report-button-group {
+	display: flex;
+	gap: 10px;
+	margin-top: 15px;
+}
+
+.report-btn {
+	font-size: 1em;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.report-btn.save-btn {
+	background-color: #28a745;
+	color: white;
+}
+
+.report-btn.save-btn:hover {
+	transform: scale(1) !important;
+	background-color: #218838;
+}
+
+.report-btn.view-btn {
+	background-color: #777;
+	color: white;
+}
+
+.report-btn.view-btn:hover {
+	transform: scale(1) !important;
+	background-color: #333;
+}
+
+.night-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 15px 30px;
+	padding-bottom: 10px;
+}
+
+.night-grid .night-divider {
+	display: none;
+}
+
+.night-action-group {
+	width: 100%;
+}
+
+.sfx-row {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 15px;
+	background: rgba(255, 255, 255, 0.03);
+}
+
+.sfx-main-controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-direction: row-reverse;
+	width: 100%;
+}
+
+.sfx-label {
+	font-size: 13px;
+	color: #5e5e5e;
+	text-align: right;
+	margin-left: 25px;
+}
+
+.sfx-select {
+	flex-grow: 1;
+	max-width: 140px;
+	padding: 5px;
+	background: #111;
+	color: #ddd;
+	border: 1px solid #333;
+	border-radius: 4px;
+	line-height: 1.1;
+}
+
+.sfx-play-btn {
+	background: none !important;
+	border: none;
+	cursor: pointer;
+	padding: none;
+}
+
+.sfx-play-icon {
+	width: 25px;
+	height: 25px;
+	filter: grayscale(1) brightness(1.5);
+}
+
+.sfx-progress-container {
+	width: 100%;
+	height: 10px;
+	display: none;
+}
+
+.sfx-progress-container.visible {
+	display: flex;
+}
+
+.sfx-seekbar {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 100%;
+	height: 4px;
+	background: #cfcfcf;
+	border-radius: 3px;
+	outline: none;
+	cursor: pointer;     /* direction: ltr; */
+}
+
+.sfx-seekbar:hover {
+	background: #c0c0c0;
+}
+
+.sfx-seekbar::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 8px;
+	height: 8px;
+	background: #212121;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.sfx-seekbar::-moz-range-thumb {
+	width: 8px;
+	height: 8px;
+	background: #212121;
+	border-radius: 50%;
+	cursor: pointer;
+	border: none;
+}
+
+@media (min-width:768px) {
+	.night-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+
+}
+
+@media (min-width:1000px) {
+	#dashboard-grid {
+		grid-template-columns: repeat(6, 1fr);
+	}
+
+	.last-move-cards {
+		grid-column: 1 / span 2;
+		grid-row: 1;
+	}
+
+	.timer-box {
+		grid-column: 3 / span 2;
+		grid-row: 1;
+	}
+
+	.tip-box {
+		grid-column: 5 / span 2;
+		grid-row: 1;
+	}
+
+	.players-status {
+		grid-column: 1 / span 4;
+		grid-row: 2;
+	}
+
+	.night-notes {
+		grid-column: 1 / span 2;
+		grid-row: 3;
+	}
+
+	.night-report {
+		grid-column: 3 / span 4;
+		grid-row: 3 / span 4;
+	}
+
+	.sound-box {
+		grid-column: 5 / span 2;
+		grid-row: 2;
+	}
+
 }
