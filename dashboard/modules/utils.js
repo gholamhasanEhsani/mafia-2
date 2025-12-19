@@ -59,8 +59,8 @@ window.SOUND_EFFECTS_DATA = {
         { label: 'شلیک ۵', file: 'shot-23053.mp3' }, { label: 'شلیک ۶', file: 'shot-307467.mp3' },
         { label: 'شلیک ۷', file: 'shot-318127.mp3' }, { label: 'شلیک ۸', file: 'shot-384451.mp3' },
         { label: 'شلیک ۹', file: 'shot-39722.mp3' }, { label: 'شلیک ۱۰', file: 'shot-39789.mp3' },
-        { label: 'شلیک ۱۲', file: 'shot-43852.mp3' }, { label: 'شلیک ۱۳', file: 'shot-90286.mp3' },
-        { label: 'شلیک ۱۴', file: 'shot-94951.mp3' }, { label: 'شلیک ۱۵', file: 'shot-98831.mp3' },
+        { label: 'شلیک ۱۱', file: 'shot-43852.mp3' }, { label: 'شلیک ۱۲', file: 'shot-90286.mp3' },
+        { label: 'شلیک ۱۳', file: 'shot-94951.mp3' }, { label: 'شلیک ۱۴', file: 'shot-98831.mp3' },
         { label: 'پوکه ۱', file: 'shot-39791.mp3' }
     ],
     'اتمسفر شب': [
