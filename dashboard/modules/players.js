@@ -28,6 +28,7 @@ const renderPlayersList = () => {
     });
 
     sortedPlayers.forEach(player => {
+        player.side = ROLE_SIDE_MAPPING[player.role] || "unknown";
         const button = document.createElement('button');
         button.classList.add('player-status-button');
         button.setAttribute('data-name', player.name);

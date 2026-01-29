@@ -43,6 +43,12 @@ window.ROLE_KEY_MAPPING = {
     'konstantin': 'کنستانتین'
 };
 
+window.ROLE_SIDE_MAPPING = {
+    "شهروند ساده": "citizen", "دکتر واتسون": "citizen", "لئون حرفه ای": "citizen", "همشهری کین": "citizen", "کنستانتین": "citizen",
+    "پدرخوانده": "mafia", "ماتادور": "mafia", "ساول گودمن": "mafia", "مافیا ساده": "mafia",
+    "نوستراداموس": "neutral", "شرلوک هولمز": "neutral", "جک اسپارو": "neutral"
+}
+
 window.LOCKED_TEXT = ' (قفل شده توسط ماتادور)';
 window.LOCKED_PLACEHOLDER = `🔒 ${window.LOCKED_TEXT}`;
 
