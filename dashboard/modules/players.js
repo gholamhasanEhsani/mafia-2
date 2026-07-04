@@ -82,6 +82,18 @@ const togglePlayerStatus = (playerName) => {
     }
 };
 
+const resetPlayersStatus = () => {
+    // Reset all players to 'alive' status
+    playersData.forEach(player => {
+        player.status = 'alive';
+    });
+    setLocalStorageItem(ROLES_STORAGE_KEY, playersData);
+    renderPlayersList();
+    if (typeof updateNightSelects === 'function') {
+        updateNightSelects();
+    }
+};
+
 const loadAndDisplayRoles = () => {
     const storedRoles = getLocalStorageItem(ROLES_STORAGE_KEY);
     const storedVisibility = getLocalStorageItem(LS_ROLES_VISIBLE_KEY);
@@ -89,6 +101,12 @@ const loadAndDisplayRoles = () => {
     // Load Roles
     if (storedRoles && storedRoles.length > 0) {
         playersData = storedRoles;
+        // Ensure all players start as alive (reset any dead status from previous game)
+        playersData.forEach(player => {
+            if (!player.status) {
+                player.status = 'alive';
+            }
+        });
     } else {
         // Fallback for testing/initial run
         playersData = [
