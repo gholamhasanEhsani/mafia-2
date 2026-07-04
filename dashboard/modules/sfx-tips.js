@@ -5,6 +5,7 @@
 // Audio pool for simultaneous SFX playback (supports up to 8 concurrent sounds)
 let sfxAudioPool = [];
 const SFX_POOL_SIZE = 8;
+let atmosphereProgressInterval = null;
 
 const initAudioPool = () => {
     const poolContainer = document.getElementById('sfx-players-pool');
@@ -78,7 +79,7 @@ const playSfxFile = (fileName, label = "افکت صوتی", row) => {
     };
 };
 
-const playAtmosphere = (fileName, label = "اتمسفر شب") => {
+const playAtmosphere = (fileName, label = "اتمسفر شب", row) => {
     const atmospherePlayer = document.getElementById('atmosphere-player');
     if (!atmospherePlayer) return;
 
@@ -89,6 +90,8 @@ const playAtmosphere = (fileName, label = "اتمسفر شب") => {
     atmospherePlayer.play()
         .then(() => {
             if (window.notyf) window.notyf.success(`در حال پخش: ${label}`);
+            // Start updating progress bar for atmosphere
+            if (row) startAtmosphereProgress(atmospherePlayer, row);
         })
         .catch(error => {
             if (window.notyf) window.notyf.error(`خطا در پخش اتمسفر`);
@@ -96,11 +99,31 @@ const playAtmosphere = (fileName, label = "اتمسفر شب") => {
         });
 };
 
-const stopAtmosphere = () => {
+const startAtmosphereProgress = (atmospherePlayer, row) => {
+    // Clear any existing interval
+    if (atmosphereProgressInterval) clearInterval(atmosphereProgressInterval);
+    
+    atmosphereProgressInterval = setInterval(() => {
+        if (atmospherePlayer.paused) {
+            clearInterval(atmosphereProgressInterval);
+            return;
+        }
+        updateProgressUI(row, atmospherePlayer);
+    }, 100);
+};
+
+const stopAtmosphere = (row) => {
     const atmospherePlayer = document.getElementById('atmosphere-player');
     if (atmospherePlayer) {
         atmospherePlayer.pause();
         atmospherePlayer.currentTime = 0;
+    }
+    if (atmosphereProgressInterval) {
+        clearInterval(atmosphereProgressInterval);
+    }
+    if (row) {
+        const progressContainer = row.querySelector('.sfx-progress-container');
+        if (progressContainer) progressContainer.classList.remove('visible');
     }
 };
 
@@ -149,11 +172,22 @@ const renderSFXButtons = () => {
         seekBar.value = '0';
 
         seekBar.addEventListener('input', () => {
-            const currentPlayingAudio = sfxAudioPool.find(a => a.src.includes(select.value) && !a.paused);
-            if (currentPlayingAudio) {
-                const percentage = seekBar.value;
-                currentPlayingAudio.currentTime = (percentage / 100) * currentPlayingAudio.duration;
-                seekBar.style.background = `linear-gradient(to left, #212121 ${percentage}%, #cfcfcf ${percentage}%)`;
+            // Check if this is an atmosphere group
+            if (groupName === 'اتمسفر شب') {
+                const atmospherePlayer = document.getElementById('atmosphere-player');
+                if (atmospherePlayer && atmospherePlayer.duration) {
+                    const percentage = seekBar.value;
+                    atmospherePlayer.currentTime = (percentage / 100) * atmospherePlayer.duration;
+                    seekBar.style.background = `linear-gradient(to left, #212121 ${percentage}%, #cfcfcf ${percentage}%)`;
+                }
+            } else {
+                // For SFX, find from pool
+                const currentPlayingAudio = sfxAudioPool.find(a => a.src.includes(select.value) && !a.paused);
+                if (currentPlayingAudio) {
+                    const percentage = seekBar.value;
+                    currentPlayingAudio.currentTime = (percentage / 100) * currentPlayingAudio.duration;
+                    seekBar.style.background = `linear-gradient(to left, #212121 ${percentage}%, #cfcfcf ${percentage}%)`;
+                }
             }
         });
 
@@ -170,10 +204,10 @@ const renderSFXButtons = () => {
             if (groupName === 'اتمسفر شب') {
                 const atmospherePlayer = document.getElementById('atmosphere-player');
                 if (atmospherePlayer.src.includes(selectedFile) && !atmospherePlayer.paused) {
-                    stopAtmosphere();
+                    stopAtmosphere(row);
                     iconImg.src = window.PLAY_ICON;
                 } else {
-                    playAtmosphere(selectedFile, selectedLabel);
+                    playAtmosphere(selectedFile, selectedLabel, row);
                     iconImg.src = window.STOP_ICON;
                 }
             } else {
