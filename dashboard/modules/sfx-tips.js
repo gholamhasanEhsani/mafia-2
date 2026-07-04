@@ -2,6 +2,36 @@
 // SOUND EFFECTS AND TIPS MANAGEMENT (SFX-TIPS.JS)
 // ==========================================================
 
+// Audio pool for simultaneous SFX playback (supports up to 8 concurrent sounds)
+let sfxAudioPool = [];
+const SFX_POOL_SIZE = 8;
+
+const initAudioPool = () => {
+    const poolContainer = document.getElementById('sfx-players-pool');
+    if (!poolContainer) return;
+    
+    for (let i = 0; i < SFX_POOL_SIZE; i++) {
+        const audio = document.createElement('audio');
+        audio.volume = 1;
+        poolContainer.appendChild(audio);
+        sfxAudioPool.push(audio);
+    }
+};
+
+const getAvailableAudioFromPool = () => {
+    // Find first stopped audio element or reuse the oldest one
+    let availableAudio = sfxAudioPool.find(audio => audio.paused);
+    
+    if (!availableAudio) {
+        // All are playing, reuse the first one
+        availableAudio = sfxAudioPool[0];
+        availableAudio.pause();
+        availableAudio.currentTime = 0;
+    }
+    
+    return availableAudio;
+};
+
 const updateProgressUI = (row, player) => {
     const seekBar = row.querySelector('.sfx-seekbar');
     const progressContainer = row.querySelector('.sfx-progress-container');
@@ -20,19 +50,15 @@ const updateProgressUI = (row, player) => {
 };
 
 const playSfxFile = (fileName, label = "افکت صوتی", row) => {
-    if (!sfxPlayer || !fileName) return;
+    if (!fileName) return;
 
-    if (!sfxPlayer.paused) {
-        sfxPlayer.pause();
-        sfxPlayer.currentTime = 0;
-        document.querySelectorAll('.sfx-play-icon').forEach(img => img.src = window.PLAY_ICON);
-        document.querySelectorAll('.sfx-progress-container').forEach(div => div.classList.remove('visible'));
-    }
+    // Get an available audio element from the pool
+    const audioElement = getAvailableAudioFromPool();
+    const iconImg = row?.querySelector('.sfx-play-icon');
 
-    sfxPlayer.src = `../audio/${fileName}`;
-    const iconImg = row.querySelector('.sfx-play-icon');
-
-    sfxPlayer.play()
+    audioElement.src = `../audio/${fileName}`;
+    
+    audioElement.play()
         .then(() => {
             if (iconImg) iconImg.src = window.STOP_ICON;
             if (window.notyf) window.notyf.success(`در حال پخش: ${label}`);
@@ -42,12 +68,40 @@ const playSfxFile = (fileName, label = "افکت صوتی", row) => {
             console.error('Audio playback failed:', error);
         });
 
-    sfxPlayer.ontimeupdate = () => updateProgressUI(row, sfxPlayer);
-
-    sfxPlayer.onended = () => {
-        if (iconImg) iconImg.src = window.PLAY_ICON;
-        row.querySelector('.sfx-progress-container').classList.remove('visible');
+    audioElement.ontimeupdate = () => {
+        if (row) updateProgressUI(row, audioElement);
     };
+
+    audioElement.onended = () => {
+        if (iconImg) iconImg.src = window.PLAY_ICON;
+        if (row) row.querySelector('.sfx-progress-container')?.classList.remove('visible');
+    };
+};
+
+const playAtmosphere = (fileName, label = "اتمسفر شب") => {
+    const atmospherePlayer = document.getElementById('atmosphere-player');
+    if (!atmospherePlayer) return;
+
+    atmospherePlayer.src = `../audio/${fileName}`;
+    atmospherePlayer.loop = true;
+    atmospherePlayer.volume = 0.6; // Slightly lower volume for background
+    
+    atmospherePlayer.play()
+        .then(() => {
+            if (window.notyf) window.notyf.success(`در حال پخش: ${label}`);
+        })
+        .catch(error => {
+            if (window.notyf) window.notyf.error(`خطا در پخش اتمسفر`);
+            console.error('Atmosphere playback failed:', error);
+        });
+};
+
+const stopAtmosphere = () => {
+    const atmospherePlayer = document.getElementById('atmosphere-player');
+    if (atmospherePlayer) {
+        atmospherePlayer.pause();
+        atmospherePlayer.currentTime = 0;
+    }
 };
 
 const renderSFXButtons = () => {
@@ -58,6 +112,7 @@ const renderSFXButtons = () => {
     for (const [groupName, files] of Object.entries(window.SOUND_EFFECTS_DATA)) {
         const row = document.createElement('div');
         row.className = 'sfx-row';
+        row.setAttribute('data-group', groupName);
 
         const mainControls = document.createElement('div');
         mainControls.className = 'sfx-main-controls';
@@ -94,9 +149,10 @@ const renderSFXButtons = () => {
         seekBar.value = '0';
 
         seekBar.addEventListener('input', () => {
-            if (sfxPlayer.src.includes(select.value)) {
+            const currentPlayingAudio = sfxAudioPool.find(a => a.src.includes(select.value) && !a.paused);
+            if (currentPlayingAudio) {
                 const percentage = seekBar.value;
-                sfxPlayer.currentTime = (percentage / 100) * sfxPlayer.duration;
+                currentPlayingAudio.currentTime = (percentage / 100) * currentPlayingAudio.duration;
                 seekBar.style.background = `linear-gradient(to left, #212121 ${percentage}%, #cfcfcf ${percentage}%)`;
             }
         });
@@ -110,10 +166,18 @@ const renderSFXButtons = () => {
             const selectedFile = select.value;
             const selectedLabel = select.options[select.selectedIndex].text;
 
-            if (sfxPlayer.src.includes(selectedFile) && !sfxPlayer.paused) {
-                sfxPlayer.pause();
-                iconImg.src = window.PLAY_ICON;
+            // Check if this is an atmosphere group
+            if (groupName === 'اتمسفر شب') {
+                const atmospherePlayer = document.getElementById('atmosphere-player');
+                if (atmospherePlayer.src.includes(selectedFile) && !atmospherePlayer.paused) {
+                    stopAtmosphere();
+                    iconImg.src = window.PLAY_ICON;
+                } else {
+                    playAtmosphere(selectedFile, selectedLabel);
+                    iconImg.src = window.STOP_ICON;
+                }
             } else {
+                // For SFX, use the pool system
                 playSfxFile(selectedFile, selectedLabel, row);
             }
         });
@@ -135,8 +199,13 @@ const startTipRotation = () => {
 };
 
 const initSfxTips = () => {
+    initAudioPool();
     renderSFXButtons();
     if (window.TIPS && window.TIPS.length > 0) startTipRotation();
 };
 
-const playSfx = (fileName, label) => playSfxFile(fileName, label);
+const playSfx = (fileName, label) => {
+    const audioElement = getAvailableAudioFromPool();
+    audioElement.src = `../audio/${fileName}`;
+    audioElement.play().catch(error => console.error('SFX playback failed:', error));
+};
