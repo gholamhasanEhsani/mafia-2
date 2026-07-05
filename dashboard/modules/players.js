@@ -44,10 +44,17 @@ const renderPlayersList = () => {
         // Conditionally hide the role text
         const roleText = rolesVisible ? player.role : '';
 
-        button.innerHTML = `
-            <div class="player-name">${player.name}</div>
-            <div class="player-role">${roleText}</div>
-        `;
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'player-name';
+        nameDiv.textContent = player.name;
+
+        const roleDiv = document.createElement('div');
+        roleDiv.className = 'player-role';
+        roleDiv.textContent = roleText;
+
+        button.innerHTML = '';
+        button.appendChild(nameDiv);
+        button.appendChild(roleDiv);
 
         button.addEventListener('click', () => {
             togglePlayerStatus(player.name);

@@ -212,6 +212,12 @@ window.showModal = (title, content) => {
     document.getElementById('close-generic-modal')?.addEventListener('click', () => modal.style.display = 'none');
 };
 
+window.escapeHTML = (str) => {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+};
+
 const toPersianDigits = t => { let e = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"]; return t.toString().replace(/[0-9]/g, t => e[+t]) };
 
 // **********************************************

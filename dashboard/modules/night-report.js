@@ -104,7 +104,7 @@ window.updateNightSelects = (resetCache = false) => {
             const targetList = item.id === 'matador-control-select' ? getPlayerFilter('nonMafia') : item.targetList;
 
             const targetOptions = targetList.map(p =>
-                `<option value="${p.name}">${p.name} (${p.role})</option>`
+                `<option value="${window.escapeHTML(p.name)}">${window.escapeHTML(p.name)} (${p.role})</option>`
             ).join('');
 
             select.innerHTML = `<option value="" selected disabled>${correctPlaceholderText}</option>` + targetOptions;
@@ -147,17 +147,17 @@ window.updateNightSelects = (resetCache = false) => {
 
         if (action === 'kharidari') {
             const simpleCitizens = getPlayerFilter('simpleCitizen').map(p =>
-                `<option value="${p.name}">${p.name} (${p.role})</option>`
+                `<option value="${window.escapeHTML(p.name)}">${window.escapeHTML(p.name)} (${p.role})</option>`
             ).join('');
             targetOptionsHTML = placeholder + failureOption + simpleCitizens;
         } else if (action === 'hssheshom') {
             const nonMafiaOptions = getPlayerFilter('nonMafia').map(p =>
-                `<option value="${p.name}">${p.name} (${p.role})</option>`
+                `<option value="${window.escapeHTML(p.name)}">${window.escapeHTML(p.name)} (${p.role})</option>`
             ).join('');
             targetOptionsHTML = placeholder + failureOption + nonMafiaOptions;
         } else { // shot (default)
             const allPlayersOptions = allAlivePlayers.map(p =>
-                `<option value="${p.name}">${p.name} (${p.role})</option>`
+                `<option value="${window.escapeHTML(p.name)}">${window.escapeHTML(p.name)} (${p.role})</option>`
             ).join('');
             targetOptionsHTML = placeholder + allPlayersOptions;
         }
@@ -401,7 +401,7 @@ const generateReportHTML = (nightReport) => {
 
         reportActions.forEach(action => {
             let actionText = '';
-            const getTargetNameBold = (name) => name && name !== 'failed' ? `<b>${name}</b>` : '';
+            const getTargetNameBold = (name) => name && name !== 'failed' ? `<b>${window.escapeHTML(name)}</b>` : '';
             const targetName = getTargetNameBold(action.target);
 
             if (action.role === 'گروه مافیا' || action.role === 'مافیا') {
@@ -456,7 +456,7 @@ const generateReportHTML = (nightReport) => {
         });
 
         if (revivedPlayers.length > 0) {
-            const revivedList = revivedPlayers.map(p => `<b>${p}</b>`).join(' و ');
+            const revivedList = revivedPlayers.map(p => `<b>${window.escapeHTML(p)}</b>`).join(' و ');
             reportHTML += `<li>✨ شب گذشته ${revivedList} مجدداً متولد شد.</li>`;
         }
 
@@ -470,24 +470,24 @@ const generateReportHTML = (nightReport) => {
             let casualtyMessage = '💀 شب گذشته ';
 
             if (slaughteredPlayers.length > 0) {
-                const slaughtList = slaughteredPlayers.map(p => `<b>${p}</b>`).join(' و ');
+                const slaughtList = slaughteredPlayers.map(p => `<b>${window.escapeHTML(p)}</b>`).join(' و ');
                 casualtyMessage += `${slaughtList} سلاخی شد`;
 
                 if (killedPlayers.length > 0) {
-                    const killedList = killedPlayers.map(p => `<b>${p}</b>`).join(' و ');
+                    const killedList = killedPlayers.map(p => `<b>${window.escapeHTML(p)}</b>`).join(' و ');
                     casualtyMessage += ` و ${killedList} کشته شد.`;
                 } else {
                     casualtyMessage += `.`;
                 }
             } else if (killedPlayers.length > 0) {
-                const killedList = killedPlayers.map(p => `<b>${p}</b>`).join(' و ');
+                const killedList = killedPlayers.map(p => `<b>${window.escapeHTML(p)}</b>`).join(' و ');
                 casualtyMessage += `${killedList} کشته شد.`;
             }
             reportHTML += `<li>${casualtyMessage}</li>`;
         }
 
         if (kinMafiaInquiry) {
-            reportHTML += `<li>🕵️‍♀️ طبق استعلامات همشهری کین <b>${kinMafiaInquiry}</b> مافیا است.</li>`;
+            reportHTML += `<li>🕵️‍♀️ طبق استعلامات همشهری کین <b>${window.escapeHTML(kinMafiaInquiry)}</b> مافیا است.</li>`;
         }
 
         reportHTML += '</ul>';
