@@ -45,7 +45,7 @@ window.ROLE_KEY_MAPPING = {
 
 window.ROLE_SIDE_MAPPING = {
     "شهروند ساده": "citizen", "دکتر واتسون": "citizen", "لئون حرفه ای": "citizen", "همشهری کین": "citizen", "کنستانتین": "citizen",
-    "پدرخوانده": "mafia", "ماتادور": "mafia", "ساول گودمن": "mafia", "مافیا ساده": "mafia",
+    "پدرخوانده": "mafia", "ماتادور": "mafia", "ساول گودمن": "mafia", "مافیای ساده": "mafia",
     "نوستراداموس": "neutral", "شرلوک هولمز": "neutral", "جک اسپارو": "neutral"
 }
 
@@ -130,7 +130,6 @@ const doctorTargetSelect = document.getElementById('doctor-target-select');
 const leonTargetSelect = document.getElementById('leon-target-select');
 const kinTargetSelect = document.getElementById('kin-target-select');
 const konstantinTargetSelect = document.getElementById('konstantin-target-select');
-const sfxPlayer = document.getElementById('sfx-player');
 const sfxButtonsContainer = document.getElementById('sfx-buttons-container');
 
 // **********************************************

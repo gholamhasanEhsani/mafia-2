@@ -10,7 +10,7 @@ let atmosphereProgressInterval = null;
 const initAudioPool = () => {
     const poolContainer = document.getElementById('sfx-players-pool');
     if (!poolContainer) return;
-    
+
     for (let i = 0; i < SFX_POOL_SIZE; i++) {
         const audio = document.createElement('audio');
         audio.volume = 1;
@@ -22,14 +22,14 @@ const initAudioPool = () => {
 const getAvailableAudioFromPool = () => {
     // Find first stopped audio element or reuse the oldest one
     let availableAudio = sfxAudioPool.find(audio => audio.paused);
-    
+
     if (!availableAudio) {
         // All are playing, reuse the first one
         availableAudio = sfxAudioPool[0];
         availableAudio.pause();
         availableAudio.currentTime = 0;
     }
-    
+
     return availableAudio;
 };
 
@@ -50,7 +50,7 @@ const updateProgressUI = (row, player) => {
     }
 };
 
-const playSfxFile = (fileName, label = "افکت صوتی", row) => {
+const playSfxFile = (fileName, label = "افکت صوتی", row, silent = false) => {
     if (!fileName) return;
 
     // Get an available audio element from the pool
@@ -58,14 +58,14 @@ const playSfxFile = (fileName, label = "افکت صوتی", row) => {
     const iconImg = row?.querySelector('.sfx-play-icon');
 
     audioElement.src = `../audio/${fileName}`;
-    
+
     audioElement.play()
         .then(() => {
             if (iconImg) iconImg.src = window.STOP_ICON;
-            if (window.notyf) window.notyf.success(`در حال پخش: ${label}`);
+            if (!silent && window.notyf) window.notyf.success(`در حال پخش: ${label}`);
         })
         .catch(error => {
-            if (window.notyf) window.notyf.error(`خطا در پخش فایل صوتی`);
+            if (!silent && window.notyf) window.notyf.error(`خطا در پخش فایل صوتی`);
             console.error('Audio playback failed:', error);
         });
 
@@ -86,7 +86,7 @@ const playAtmosphere = (fileName, label = "اتمسفر شب", row) => {
     atmospherePlayer.src = `../audio/${fileName}`;
     atmospherePlayer.loop = true;
     atmospherePlayer.volume = 0.6; // Slightly lower volume for background
-    
+
     atmospherePlayer.play()
         .then(() => {
             if (window.notyf) window.notyf.success(`در حال پخش: ${label}`);
@@ -102,7 +102,7 @@ const playAtmosphere = (fileName, label = "اتمسفر شب", row) => {
 const startAtmosphereProgress = (atmospherePlayer, row) => {
     // Clear any existing interval
     if (atmosphereProgressInterval) clearInterval(atmosphereProgressInterval);
-    
+
     atmosphereProgressInterval = setInterval(() => {
         if (atmospherePlayer.paused) {
             clearInterval(atmosphereProgressInterval);

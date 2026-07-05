@@ -9,6 +9,8 @@ let currentModeKey = 'NORMAL';
 let currentTime = DEFAULT_TIMES.NORMAL;
 let isRunning = false;
 let isPausedByUser = false;
+const MIN_TIMER_SECONDS = 5;
+const TIME_STEP = 5;
 
 // Utility to extract mode name from button text
 const extractModeName = fullText => fullText.split('(')[0].trim();
@@ -55,11 +57,11 @@ const tick = () => {
         stopTimer(false);
         notyf.success('🔔 زمان به پایان رسید!', 5000);
         // Play sound effect logic
-        if (typeof sfxPlayer !== 'undefined' && SOUND_EFFECTS) {
-            const bellSfx = SOUND_EFFECTS.find(s => s.file === 'bell-98033.mp3');
+        if (typeof playSfxFile === 'function' && window.SOUND_EFFECTS_DATA) {
+            const bellGroup = window.SOUND_EFFECTS_DATA['زنگ پایان تایمر'];
+            const bellSfx = bellGroup && bellGroup.find(s => s.file === 'bell-98033.mp3');
             if (bellSfx) {
-                sfxPlayer.src = `../audio/${bellSfx.file}`;
-                sfxPlayer.play().catch(e => console.error('Bell playback failed', e));
+                playSfxFile(bellSfx.file, bellSfx.label, undefined, true);
             }
         }
     }
@@ -67,6 +69,14 @@ const tick = () => {
 
 const startTimer = () => {
     if (isRunning) return;
+
+    // If timer already finished (time is at 0), reset to the active mode's duration before starting again
+    if (currentTime <= 0) {
+        const activeModeBtn = document.querySelector('.timer-mode-btn.solid');
+        currentTime = activeModeBtn ? parseInt(activeModeBtn.getAttribute('data-time')) : DEFAULT_TIMES[currentModeKey];
+        updateDisplay();
+    }
+
     isRunning = true;
     isPausedByUser = false;
     timerInterval = setInterval(tick, 1000);
@@ -116,7 +126,18 @@ const adjustTime = (deltaSeconds) => {
         return;
     }
 
-    currentTime = Math.max(1, currentTime + deltaSeconds);
+    let newTime;
+    if (deltaSeconds > 0) {
+        // Snap up to the next multiple of 5 (if already a multiple, move to the next one)
+        newTime = Math.ceil(currentTime / TIME_STEP) * TIME_STEP;
+        if (newTime === currentTime) newTime += TIME_STEP;
+    } else {
+        // Snap down to the previous multiple of 5 (if already a multiple, move to the previous one)
+        newTime = Math.floor(currentTime / TIME_STEP) * TIME_STEP;
+        if (newTime === currentTime) newTime -= TIME_STEP;
+    }
+
+    currentTime = Math.max(MIN_TIMER_SECONDS, newTime);
     saveCurrentTime();
 
     const currentModeBtn = document.querySelector('.timer-mode-btn.solid');
